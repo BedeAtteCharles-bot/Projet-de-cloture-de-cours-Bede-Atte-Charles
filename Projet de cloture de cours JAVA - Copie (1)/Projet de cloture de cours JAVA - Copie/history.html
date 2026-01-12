@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Historique des mouvements de stock">
+  <title>Historique | StockFlow Pro</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="header">
+  <h1>📦 StockFlow Pro</h1>
+  <nav class="nav">
+    <a href="dashboard.html">Tableau de bord</a>
+    <a href="stock.html">Gestion des stocks</a>
+    <a href="history.html" class="active">Historique</a>
+  </nav>
+</header>
+
+<main class="main">
+  <section class="intro">
+    <h2>Historique des mouvements</h2>
+    <p>
+      Journal complet de toutes les entrées et sorties de stock. 
+      Consultez l'historique de vos mouvements pour une traçabilité complète.
+    </p>
+  </section>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Produit</th>
+          <th>Type</th>
+          <th>Quantité</th>
+          <th>Stock avant</th>
+          <th>Stock après</th>
+          <th>Raison</th>
+        </tr>
+      </thead>
+      <tbody id="historyTable">
+        <!-- L'historique sera affiché ici -->
+      </tbody>
+    </table>
+    <div id="emptyHistory" class="empty-state" style="display: none;">
+      <h3>Aucun mouvement</h3>
+      <p>Aucun mouvement n'a encore été enregistré. Les entrées et sorties apparaîtront ici.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <p>© 2025 – StockFlow Pro | Application de Gestion de Stock Professionnelle</p>
+</footer>
+
+<script src="js/app.js"></script>
+<script>
+  function renderHistory() {
+    const table = document.getElementById("historyTable");
+    const emptyState = document.getElementById("emptyHistory");
+    
+    if (!table) return;
+
+    const movementsToShow = movements.slice(0, 500); // Limiter à 500 derniers
+    
+    if (movementsToShow.length === 0) {
+      table.style.display = 'none';
+      if (emptyState) emptyState.style.display = 'block';
+      return;
+    }
+
+    table.style.display = 'table-row-group';
+    if (emptyState) emptyState.style.display = 'none';
+    table.innerHTML = '';
+
+    movementsToShow.forEach((movement, index) => {
+      const row = document.createElement('tr');
+      row.style.animation = `fadeInUp 0.3s ease-out ${index * 0.02}s both`;
+      
+      const typeClass = movement.type === 'entry' ? 'success' : 'danger';
+      const typeText = movement.type === 'entry' ? 'Entrée' : 'Sortie';
+      const typeIcon = movement.type === 'entry' ? '➕' : '➖';
+      
+      row.innerHTML = `
+        <td>${formatDate(movement.date)}</td>
+        <td><strong>${escapeHtml(movement.productName)}</strong></td>
+        <td><span class="status-badge ${typeClass}">${typeIcon} ${typeText}</span></td>
+        <td><span style="font-weight: 600; color: var(--primary);">${movement.quantity}</span></td>
+        <td>${movement.previousQuantity}</td>
+        <td><strong>${movement.newQuantity}</strong></td>
+        <td><span style="color: var(--gray);">${escapeHtml(movement.reason || '-')}</span></td>
+      `;
+      table.appendChild(row);
+    });
+  }
+
+  // Charger l'historique au chargement de la page
+  if (document.getElementById("historyTable")) {
+    renderHistory();
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Connexion à StockFlow Pro">
+  <title>Connexion | StockFlow Pro</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="center">
+
+  <div class="card">
+    <h1>🔐 Connexion</h1>
+    <p style="text-align: center; color: var(--gray); margin-bottom: 2rem;">
+      Accédez à votre espace de gestion de stock
+    </p>
+
+    <div class="form-group">
+      <label for="email">Adresse email</label>
+      <input 
+        type="email" 
+        id="email" 
+        placeholder="votre@email.com"
+        required
+        autocomplete="email"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="password">Mot de passe</label>
+      <input 
+        type="password" 
+        id="password" 
+        placeholder="••••••••"
+        required
+        autocomplete="current-password"
+      >
+    </div>
+
+    <button class="btn btn-primary" onclick="login()">
+      Se connecter
+    </button>
+    
+    <a href="register.html">Vous n'avez pas de compte ? Créer un compte</a>
+  </div>
+
+<script src="js/auth.js"></script>
+</body>
+</html>

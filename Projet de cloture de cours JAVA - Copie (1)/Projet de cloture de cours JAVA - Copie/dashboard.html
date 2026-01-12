@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Application professionnelle de gestion de stock - Tableau de bord">
+  <title>Tableau de bord | StockFlow Pro</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="header">
+  <h1>📦 StockFlow Pro</h1>
+  <nav class="nav">
+    <a href="dashboard.html" class="active">Tableau de bord</a>
+    <a href="stock.html">Gestion des stocks</a>
+    <a href="history.html">Historique</a>
+  </nav>
+</header>
+
+<main class="main">
+  <section class="intro">
+    <h2>Tableau de bord</h2>
+    <p>
+      Vue d'ensemble complète de votre inventaire. Les statistiques s'actualisent automatiquement 
+      en temps réel selon les entrées et sorties de produits.
+    </p>
+  </section>
+
+  <section class="cards">
+    <div class="card">
+      <h3 id="totalProducts">0</h3>
+      <p>Produits enregistrés</p>
+    </div>
+
+    <div class="card success">
+      <h3 id="totalQuantity">0</h3>
+      <p>Quantité totale en stock</p>
+    </div>
+
+    <div class="card alert">
+      <h3 id="totalRupture">0</h3>
+      <p>Produits en rupture de stock</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--primary);">
+      <h3 id="avgQuantity">0</h3>
+      <p>Quantité moyenne</p>
+    </div>
+  </section>
+
+  <section class="charts-section">
+    <div class="chart-container">
+      <h3>Répartition des stocks</h3>
+      <div class="chart-wrapper">
+        <div id="distributionChart" class="distribution-chart">
+          <div class="chart-empty">Ajoutez des produits pour voir la répartition</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-container">
+      <h3>Top 5 produits</h3>
+      <div id="topProducts" class="top-products">
+        <div class="chart-empty">Aucun produit enregistré</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reorder-section" id="reorderSection" style="display: none;">
+    <h3>⚠️ Produits à réapprovisionner</h3>
+    <div id="reorderList" class="reorder-list"></div>
+  </section>
+
+  <section class="info">
+    <p>
+      💡 <strong>Astuce :</strong> Si aucun produit n'est encore ajouté, les valeurs restent à zéro. 
+      Cela indique que le système est prêt mais vide. Accédez à la page "Gestion des stocks" pour commencer.
+    </p>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>© 2025 – StockFlow Pro | Application de Gestion de Stock Professionnelle</p>
+</footer>
+
+<script src="js/app.js"></script>
+<script>
+  // Mise à jour automatique du tableau de bord
+  if (typeof updateDashboard === 'function') {
+    updateDashboard();
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des stocks | StockFlow Pro</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="mb-0">📦 StockFlow Pro</h1>
+                <nav class="nav">
+                    <a th:href="@{/dashboard}" class="nav-link">Tableau de bord</a>
+                    <a th:href="@{/products}" class="nav-link active">Gestion des stocks</a>
+                    <a th:href="@{/history}" class="nav-link">Historique</a>
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-light ms-2">Déconnexion</button>
+                    </form>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container-fluid py-4">
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <section class="intro mb-4">
+                <h2>Gestion des produits</h2>
+                <p>
+                    Ajoutez, modifiez et supprimez des produits de votre inventaire. 
+                    Le système détecte automatiquement les ruptures de stock.
+                </p>
+            </section>
+
+            <form th:action="@{/products}" method="post" class="card mb-4">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="name" class="form-label">Nom du produit</label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   placeholder="Ex: Ordinateur portable" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="categoryId" class="form-label">Catégorie</label>
+                            <select class="form-select" id="categoryId" name="categoryId">
+                                <option value="">Sélectionner</option>
+                                <option th:each="cat : ${categories}" 
+                                        th:value="${cat.id}" 
+                                        th:text="${cat.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="quantity" class="form-label">Quantité initiale</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" 
+                                   placeholder="Ex: 25" min="0" value="0" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="minThreshold" class="form-label">Seuil minimum</label>
+                            <input type="number" class="form-control" id="minThreshold" name="minThreshold" 
+                                   placeholder="Ex: 5" min="0" value="0">
+                            <small class="text-muted">Alerte quand le stock atteint ce niveau</small>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                ➕ Ajouter le produit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="searchInput" 
+                                   placeholder="🔍 Rechercher un produit..." 
+                                   th:value="${searchTerm != null ? searchTerm : ''}">
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="btn-group" role="group">
+                                <a th:href="@{/products}" 
+                                   class="btn" 
+                                   th:classappend="${currentFilter == 'all'} ? 'btn-primary' : 'btn-outline-primary'">
+                                    Tous
+                                </a>
+                                <a th:href="@{/products(filter='stock')}" 
+                                   class="btn" 
+                                   th:classappend="${currentFilter == 'stock'} ? 'btn-primary' : 'btn-outline-primary'">
+                                    En stock
+                                </a>
+                                <a th:href="@{/products(filter='rupture')}" 
+                                   class="btn" 
+                                   th:classappend="${currentFilter == 'rupture'} ? 'btn-primary' : 'btn-outline-primary'">
+                                    Rupture
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Catégorie</th>
+                                    <th>Quantité</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${products == null or products.isEmpty()}">
+                                    <td colspan="5" class="text-center text-muted py-5">
+                                        <h3>Aucun produit</h3>
+                                        <p>Commencez par ajouter votre premier produit en utilisant le formulaire ci-dessus.</p>
+                                    </td>
+                                </tr>
+                                <tr th:each="product : ${products}">
+                                    <td><strong th:text="${product.name}"></strong></td>
+                                    <td>
+                                        <span class="text-muted" th:text="${product.categoryName != null ? product.categoryName : 'Non catégorisé'}"></span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-primary" th:text="${product.quantity}"></span>
+                                        <span th:if="${product.minThreshold > 0}" class="text-muted small d-block">
+                                            Seuil: <span th:text="${product.minThreshold}"></span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${product.status == 'En stock' and !product.needsReorder}" 
+                                              class="badge bg-success" th:text="${product.status}"></span>
+                                        <span th:if="${product.status == 'Rupture'}" 
+                                              class="badge bg-danger" th:text="${product.status}"></span>
+                                        <span th:if="${product.needsReorder}" 
+                                              class="badge bg-warning">⚠️ Réapprovisionner</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button type="button" class="btn btn-success" 
+                                                    data-bs-toggle="modal" 
+                                                    th:attr="data-bs-target='#entryModal' + ${product.id}">
+                                                ➕ Entrée
+                                            </button>
+                                            <button type="button" class="btn btn-secondary" 
+                                                    data-bs-toggle="modal" 
+                                                    th:attr="data-bs-target='#exitModal' + ${product.id}">
+                                                ➖ Sortie
+                                            </button>
+                                            <button type="button" class="btn btn-info" 
+                                                    data-bs-toggle="modal" 
+                                                    th:attr="data-bs-target='#editModal' + ${product.id}">
+                                                ✏️
+                                            </button>
+                                            <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-danger" 
+                                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')">
+                                                    🗑️
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals pour Entrée/Sortie/Modification -->
+    <div th:each="product : ${products}">
+        <!-- Modal Entrée -->
+        <div class="modal fade" th:id="'entryModal' + ${product.id}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form th:action="@{/products/{id}/entry(id=${product.id})}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Entrée de stock - <span th:text="${product.name}"></span></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="entryQuantity" class="form-label">Quantité à ajouter</label>
+                                <input type="number" class="form-control" id="entryQuantity" name="quantity" 
+                                       min="1" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="entryReason" class="form-label">Raison (optionnel)</label>
+                                <input type="text" class="form-control" id="entryReason" name="reason" 
+                                       placeholder="Réception de stock">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-success">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Sortie -->
+        <div class="modal fade" th:id="'exitModal' + ${product.id}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form th:action="@{/products/{id}/exit(id=${product.id})}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Sortie de stock - <span th:text="${product.name}"></span></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="exitQuantity" class="form-label">Quantité à retirer (max: <span th:text="${product.quantity}"></span>)</label>
+                                <input type="number" class="form-control" id="exitQuantity" name="quantity" 
+                                       th:max="${product.quantity}" min="1" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exitReason" class="form-label">Raison (optionnel)</label>
+                                <input type="text" class="form-control" id="exitReason" name="reason" 
+                                       placeholder="Vente">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-danger">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Modification -->
+        <div class="modal fade" th:id="'editModal' + ${product.id}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form th:action="@{/products/{id}/update(id=${product.id})}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Modifier le produit</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="editName" class="form-label">Nom du produit</label>
+                                <input type="text" class="form-control" id="editName" name="name" 
+                                       th:value="${product.name}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editCategoryId" class="form-label">Catégorie</label>
+                                <select class="form-select" id="editCategoryId" name="categoryId">
+                                    <option value="">Aucune</option>
+                                    <option th:each="cat : ${categories}" 
+                                            th:value="${cat.id}" 
+                                            th:text="${cat.name}"
+                                            th:selected="${product.categoryId == cat.id}"></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editQuantity" class="form-label">Quantité</label>
+                                <input type="number" class="form-control" id="editQuantity" name="quantity" 
+                                       th:value="${product.quantity}" min="0" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editMinThreshold" class="form-label">Seuil minimum</label>
+                                <input type="number" class="form-control" id="editMinThreshold" name="minThreshold" 
+                                       th:value="${product.minThreshold}" min="0">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container-fluid text-center">
+            <p class="mb-0">© 2025 – StockFlow Pro | Application de Gestion de Stock Professionnelle</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Recherche en temps réel
+        document.getElementById('searchInput')?.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.trim();
+            if (searchTerm.length > 2 || searchTerm.length === 0) {
+                window.location.href = '/products?search=' + encodeURIComponent(searchTerm);
+            }
+        });
+    </script>
+</body>
+</html>

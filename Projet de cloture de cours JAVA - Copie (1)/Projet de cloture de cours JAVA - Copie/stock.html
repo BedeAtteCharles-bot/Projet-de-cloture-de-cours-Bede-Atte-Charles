@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gestion complète des produits en stock">
+  <title>Gestion des stocks | StockFlow Pro</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="header">
+  <h1>📦 StockFlow Pro</h1>
+  <nav class="nav">
+    <a href="dashboard.html">Tableau de bord</a>
+    <a href="stock.html" class="active">Gestion des stocks</a>
+    <a href="history.html">Historique</a>
+  </nav>
+</header>
+
+<main class="main">
+  <section class="intro">
+    <h2>Gestion des produits</h2>
+    <p>
+      Ajoutez, modifiez et supprimez des produits de votre inventaire. 
+      Le système détecte automatiquement les ruptures de stock.
+    </p>
+  </section>
+
+  <form id="productForm">
+    <div class="form-group">
+      <label for="name">Nom du produit</label>
+      <input 
+        type="text" 
+        id="name" 
+        placeholder="Ex: Ordinateur portable" 
+        required
+        autocomplete="off"
+      >
+    </div>
+    <div class="form-group">
+      <label for="category">Catégorie</label>
+      <select id="category">
+        <option value="">Sélectionner une catégorie</option>
+        <option value="Électronique">Électronique</option>
+        <option value="Informatique">Informatique</option>
+        <option value="Mobilier">Mobilier</option>
+        <option value="Alimentaire">Alimentaire</option>
+        <option value="Vêtements">Vêtements</option>
+        <option value="Fournitures">Fournitures</option>
+        <option value="Autre">Autre</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="quantity">Quantité initiale</label>
+      <input 
+        type="number" 
+        id="quantity" 
+        placeholder="Ex: 25" 
+        min="0"
+        required
+      >
+    </div>
+    <div class="form-group">
+      <label for="minThreshold">Seuil minimum d'alerte</label>
+      <input 
+        type="number" 
+        id="minThreshold" 
+        placeholder="Ex: 5 (optionnel)" 
+        min="0"
+      >
+      <small style="color: var(--gray); font-size: 0.8rem; margin-top: 0.25rem; display: block;">
+        Alerte quand le stock atteint ce niveau
+      </small>
+    </div>
+    <button type="submit" class="btn-primary">
+      <span id="submitText">➕ Ajouter le produit</span>
+    </button>
+  </form>
+
+  <div class="search-container">
+    <input 
+      type="text" 
+      id="searchInput" 
+      class="search-box" 
+      placeholder="🔍 Rechercher un produit..."
+      autocomplete="off"
+    >
+  </div>
+
+  <div class="table-container">
+    <div class="table-header-actions">
+      <div class="table-controls">
+        <div class="filter-controls">
+          <span style="font-weight: 600; color: var(--gray);">Filtrer:</span>
+          <button class="filter-btn active" data-filter="all" onclick="filterProducts('all')">Tous</button>
+          <button class="filter-btn" data-filter="stock" onclick="filterProducts('stock')">En stock</button>
+          <button class="filter-btn" data-filter="rupture" onclick="filterProducts('rupture')">Rupture</button>
+        </div>
+      </div>
+      <button class="btn btn-export" onclick="exportToCSV()">
+        📥 Exporter en CSV
+      </button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th class="sortable" onclick="sortTable('name')">Produit</th>
+          <th class="sortable" onclick="sortTable('category')">Catégorie</th>
+          <th class="sortable" onclick="sortTable('quantity')">Quantité</th>
+          <th class="sortable" onclick="sortTable('status')">Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="productTable">
+        <!-- Les produits seront affichés ici -->
+      </tbody>
+    </table>
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <h3>Aucun produit</h3>
+      <p>Commencez par ajouter votre premier produit en utilisant le formulaire ci-dessus.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <p>© 2025 – StockFlow Pro | Application de Gestion de Stock Professionnelle</p>
+</footer>
+
+<script src="js/app.js"></script>
+
+</body>
+</html>

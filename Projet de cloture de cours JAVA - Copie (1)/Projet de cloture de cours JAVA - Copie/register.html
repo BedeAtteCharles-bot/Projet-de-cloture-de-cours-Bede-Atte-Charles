@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Inscription à StockFlow Pro">
+  <title>Inscription | StockFlow Pro</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="center">
+
+  <div class="card">
+    <h1>✨ Inscription</h1>
+    <p style="text-align: center; color: var(--gray); margin-bottom: 2rem;">
+      Créez votre compte pour commencer à gérer votre stock
+    </p>
+
+    <div class="form-group">
+      <label for="name">Nom complet</label>
+      <input 
+        type="text" 
+        id="name" 
+        placeholder="Jean Dupont"
+        required
+        autocomplete="name"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="email">Adresse email</label>
+      <input 
+        type="email" 
+        id="email" 
+        placeholder="votre@email.com"
+        required
+        autocomplete="email"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="password">Mot de passe</label>
+      <input 
+        type="password" 
+        id="password" 
+        placeholder="••••••••"
+        required
+        autocomplete="new-password"
+      >
+    </div>
+
+    <button class="btn btn-primary" onclick="register()">
+      Créer mon compte
+    </button>
+    
+    <a href="login.html">Déjà inscrit ? Se connecter</a>
+  </div>
+
+<script src="js/auth.js"></script>
+</body>
+</html>

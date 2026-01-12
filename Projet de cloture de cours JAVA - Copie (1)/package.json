@@ -1,0 +1,17 @@
+{
+  "name": "stockflow-pro",
+  "version": "1.0.0",
+  "description": "Application professionnelle de gestion de stock",
+  "scripts": {
+    "dev": "echo 'Développement frontend - Utiliser Spring Boot DevTools pour le hot reload'",
+    "build": "echo 'Build géré par Maven'"
+  },
+  "keywords": [
+    "stock",
+    "management",
+    "spring-boot",
+    "java"
+  ],
+  "author": "",
+  "license": "ISC"
+}

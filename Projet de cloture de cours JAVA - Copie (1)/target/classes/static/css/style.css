@@ -1,0 +1,128 @@
+/* Variables CSS */
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1e40af;
+  --primary-light: #3b82f6;
+  --secondary: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #10b981;
+  --dark: #1f2937;
+  --dark-light: #374151;
+  --light: #f9fafb;
+  --white: #ffffff;
+  --gray: #6b7280;
+  --gray-light: #e5e7eb;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Header */
+header.header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: var(--white);
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+header.header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+header.header .nav {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+header.header .nav-link {
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+header.header .nav-link:hover,
+header.header .nav-link.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--white);
+}
+
+/* Main */
+main.main {
+  min-height: calc(100vh - 200px);
+  padding: 2rem 0;
+}
+
+section.intro {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+section.intro h2 {
+  font-size: 2rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+section.intro p {
+  color: var(--gray);
+  font-size: 1.1rem;
+}
+
+/* Cards */
+.cards .card {
+  border: none;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: var(--transition);
+}
+
+.cards .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.cards .card h3 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+/* Footer */
+footer.footer {
+  background: linear-gradient(135deg, var(--dark), var(--dark-light));
+  color: var(--white);
+  text-align: center;
+  padding: 2rem;
+  margin-top: 4rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header.header {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  header.header .nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  main.main {
+    padding: 1rem 0;
+  }
+}
